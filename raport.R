@@ -7,6 +7,12 @@ data <- read.table("D:/STUDIA/kaszcz/raport/kaszcz/data.csv",header=TRUE,sep=","
 data$Height <- data$Height * 2.54
 data$Weight <- data$Weight * 0.45
 
+par(mar = c(3, 4, 3, 4))
+par(mfrow=c(1,2)) 
+plot(data$Weight, xlab = "Indeks", ylab="Waga [kg]")
+plot(data$Height, xlab = "Indeks", ylab="Wzrost [cm]")
+
+
 data_female <- data[data$Gender=="Female",]
 #data_male<-data[data$Gender=="Male",]
 
@@ -36,6 +42,8 @@ stats_height <- c(mean(height), var(height), sd(height), sd(height)/mean(height)
 #regresja
 
 data_sorted <- data_female[order(data_female$Weight),]
+#data_model <- data_sorted[1:4500,]
+#data_test <- data_sorted[4501:5000,]
 data_test <- data_sorted[seq(1,5000,2),]
 data_model <- data_sorted[seq(2,5001,2),]
 
@@ -51,7 +59,8 @@ stats_y <- c(mean(y), var(y), sd(y), sd(y)/mean(y), min(y), max(y), skewness(y),
 
 
 fit <- lm(y~x)
-plot(x, y)
+par(mar = c(4.1, 4.1, 2, 3))
+plot(x, y, xlab = "Waga [kg]", ylab = "Wzrost [cm]")
 lines(x, predict(fit), col="red")
 
 b0 <- fit$coefficients[1]
@@ -59,7 +68,7 @@ b1 <- fit$coefficients[2]
 
 summary(fit)
 
-mse <- mean((predict(fit)-height_model)^2)
+mse <- mean((predict(fit)-y)^2)
 rmse <- sqrt(mse)
 r_sq_model <- summary(fit)$r.squared
 
@@ -67,38 +76,54 @@ r_sq_model <- summary(fit)$r.squared
 # predykcja
 alpha <- 0.05
 height_pred <- b1*weight_test+b0
-n <- length(x)
-S <- sqrt(sum(height_pred-height_test)^2/(n-2))
+n_model <- length(x)
+n_test <- 5000 - n_model
+S <- sqrt(sum((height_pred-height_test)^2)/(n_test - 2))
 x_avg <- mean(x)
-q <- qt(1-alpha/2, n-2)
+q <- qt(1-alpha/2, n_model-2)
 m <- sum((x - x_avg)^2)
 lwr<-0
 upr<-0
 
-for (i in 1:n) {
-  lwr[i] <- height_pred[i] - q*S*sqrt(1+1/n+(weight_test[i] - x_avg)^2/m)
-  upr[i] <- height_pred[i] + q*S*sqrt(1+1/n+(weight_test[i] - x_avg)^2/m)
+for (i in 1:n_test) {
+  lwr[i] <- height_pred[i] - q*S*sqrt(1+1/n_model+(weight_test[i] - x_avg)^2/m)
+  upr[i] <- height_pred[i] + q*S*sqrt(1+1/n_model+(weight_test[i] - x_avg)^2/m)
 }
 
-plot(x, y,cex=1, pch=1, col="orange")
+plot(x, y,cex=1, pch=1, col="orange", xlab = "Waga [kg]", ylab = "Wzrost [cm]", xlim=c(min(weight), max(weight)), ylim=c(min(height), max(height)))
 lines(weight_test, height_test, type="p",cex=1, pch=1, col="black")
-lines(x, predict(fit), col="red")
+#lines(, predict(fit), col="red")
+lines(weight_test, height_pred, col="blue")
 lines(weight_test, lwr, col="green")
 lines(weight_test, upr, col="green")
+legend("bottomright",legend=c("Dane modelowe", "Dane testowe", "Predykcja na danych testowych", "Przedzia³y ufnoœci predykcji"),
+       col=c("orange", "black", "blue", "green"),lty=c(0,0,1,1),pch = c(1,1,NA,NA), text.font=6, cex=0.7) 
 
 c <- 0
-for (i in 1:n) {
+for (i in 1:n_test) {
   if (height_test[i]<=upr[i] && height_test[i]>=lwr[i]){
     c <- c+1
   }
 }
-c/n
-
+c/n_test
 
 #analiza residuum
 e <- residuals(fit)
-normal <- rnorm(10^6, mean=mean(e), sd=sd(e))
-ks.test(e, normalny)
+plot(e, xlab="Indeks", ylab="", main="Residua w dopasowanym modelu regresji", cex.main=0.9, cex.lab=0.9)
+
+e_avg <- mean(e)
+e_sd <- sd(e)
+
+ks_p <- 0
+
+for (i in 1:100) {
+  normal <- rnorm(10^6, mean=e_avg, sd=e_sd)
+  ks <- ks.test(e, normal)
+  ks_p[i] <- ks$p.value
+  
+}
+
+
 
 plot(density(e))
 lines(density(normal), col="purple")
