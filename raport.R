@@ -105,27 +105,32 @@ c/n_test # = 0.9472, odpowiedni wynik
 
 # analiza residuum
 e <- residuals(fit)
-plot(e, xlab="Indeks", ylab="", main="Residua w dopasowanym modelu regresji", cex.main=0.9, cex.lab=0.9)
+plot(e, xlab="Indeks", ylab="", main="Residua w dopasowanym modelu regresji") #, cex.main=0.9, cex.lab=0.9)
+
+acf(e, lag.max = n_model, type = "correlation", main = "Autokorelacja próbkowa", ylab="", xlab="Lag", cex.main=0.7, cex.lab=0.9)
 
 e_avg <- mean(e)
 e_sd <- sd(e)
 
+plot(fit, which = 1, caption = "Residua vs Dopasowane wartoœci", sub.caption = "")
+
+
 # porównanie z gêstoœci¹, dystrybuant¹ i kwantylami rozk³adu normalnego
 plot(density(e), xlab="", ylab="", main="", ylim=c(0, 0.132))
-lines(seq(-15, 15, 0.001), dnorm(seq(-15, 15, 0.001), e_avg, e_sd), col="purple")
+lines(seq(-15, 15, 0.001), dnorm(seq(-15, 15, 0.001), 0, e_sd), col="purple")
 legend("topleft", legend = c("Estymator gêstoœci", "Gêstoœæ rozk³. normalnego"), col=c("black", "purple"), lty=1, cex=0.7)
 
 plot(ecdf(e), xlab="", ylab="", main="")
-lines(seq(-15, 15, 0.001), pnorm(seq(-15, 15, 0.001), e_avg, e_sd), col="purple")
+lines(seq(-15, 15, 0.001), pnorm(seq(-15, 15, 0.001), 0, e_sd), col="purple")
 legend("topleft", legend = c("Dystrybuanta empiryczna", "Dystrybuanta rozk³. normalnego"), col=c("black", "purple"), lty=1, cex=0.7)
 
-qqplot(e, rnorm(10^6, mean=e_avg, sd=e_sd), xlab="Residua", ylab = "Rozk³ad normalny")
+qqplot(e, rnorm(10^6, mean=0, sd=e_sd), xlab="Residua", ylab = "Rozk³ad normalny")
 
 # test Ko³mogorowa-Smirnova z metod¹ Monte Carlo
 ks_p <- 0
 
 for (i in 1:10) { # by³o wykonane dla 500 ale wolno idzie
-  normal <- rnorm(10^6, mean=e_avg, sd=e_sd)
+  normal <- rnorm(10^6, mean=0, sd=e_sd)
   ks <- ks.test(e, normal)
   ks_p[i] <- ks$p.value
 }
@@ -136,7 +141,4 @@ shapiro.test(e)
 
 # test Jarque-Bera
 jarque.bera.test(e)
-
-
-
 
