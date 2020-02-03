@@ -26,5 +26,10 @@ plot(m,v,xlab="Średnia roczna", ylab="Wariancja roczna")
 abline(lm(v~m),col=6,lty=3,lwd=2)
 summary(lm(v~m))
 
+# boxplot dla każdego roku
 boxplot(serie~floor(time(serie)), xlab = "Lata", ylab="Opady [mm]")
+
+# Wykresy srednich rocznych i wariancji
+plot(1960:1984, m, main="Średnia rocznie", xlab='lata', ylab= '')
+plot(1960:1984, v, main="Wariancja rocznie", xlab='lata', ylab='')
 
