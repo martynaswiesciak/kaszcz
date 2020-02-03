@@ -1,15 +1,13 @@
 #####################################################################
 library(forecast)
 serie.all<-AirPassengers
-
 start(serie.all)
 end(serie.all)
 serie<-window(serie.all,end=c(1958,12))
 dane.test<-window(serie.all,start=c(1959,1))
 
 
-
-plot(serie,main="Iloœæ pasa¿erów",type="o")
+plot(serie,main="Ilosc pasazerow",type="o")
 abline(v=1949:1960,col=4,lty=3)
 acf(serie,100)
 acf(serie,18)
@@ -24,8 +22,8 @@ abline(lm(v~m),col=2,lty=3,lwd=2)
 ##Boxplot for each year
 boxplot(serie~floor(time(serie)))
 
-#Rysunki œrednich rocznych i wariancji
-plot(1949:1958,m,main="œrednia rocznie")
+#Rysunki ?rednich rocznych i wariancji
+plot(1949:1958,m,main="?rednia rocznie")
 plot(1949:1958,v,main="wariancja rocznie")
 
 
@@ -40,8 +38,8 @@ boxplot(lnserie~floor(time(lnserie)))
 m.log=apply(matrix(lnserie,nr=12),2,mean)
 v.log=apply(matrix(lnserie,nr=12),2,var)
 
-#Rysunki œrednich rocznych i wariancji
-plot(1949:1958,m.log,main="œrednia rocznie")
+#Rysunki ?rednich rocznych i wariancji
+plot(1949:1958,m.log,main="?rednia rocznie")
 plot(1949:1958,v.log,main="wariancja rocznie")
 
 par(mfrow=c(1,1))
