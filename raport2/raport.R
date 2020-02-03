@@ -20,5 +20,11 @@ dane.test <- window(serie.all,start=c(1985,1)) # dane do predykcji
 acf(serie,100, main = "Funkcja autokorelacji")
 pacf(serie,100, main = "Funkcja częściowej autokorelacji")
 
+m=apply(matrix(serie,nr=12),2,mean)
+v=apply(matrix(serie,nr=12),2,var)
+plot(m,v,xlab="Średnia roczna", ylab="Wariancja roczna")
+abline(lm(v~m),col=6,lty=3,lwd=2)
+summary(lm(v~m))
 
+boxplot(serie~floor(time(serie)), xlab = "Lata", ylab="Opady [mm]")
 
