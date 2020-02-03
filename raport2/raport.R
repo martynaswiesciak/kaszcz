@@ -25,7 +25,7 @@ m=apply(matrix(serie,nr=12),2,mean)
 v=apply(matrix(serie,nr=12),2,var)
 plot(m,v,xlab="Średnia roczna", ylab="Wariancja roczna")
 abline(lm(v~m),col=6,lty=3,lwd=2)
-summary(lm(v~m))
+summary(lm(v~m)) # statystyki liczbowe
 
 # boxplot dla każdego roku
 boxplot(serie~floor(time(serie)), xlab = "Lata", ylab="Opady [mm]")
@@ -43,9 +43,30 @@ sqrtm=apply(matrix(sqrtserie,nr=12),2,mean)
 sqrtv=apply(matrix(sqrtserie,nr=12),2,var)
 plot(sqrtm,sqrtv,xlab="Średnia roczna", ylab="Wariancja roczna")
 abline(lm(sqrtv~sqrtm),col=6,lty=3,lwd=2)
-summary(lm(sqrtv~sqrtm))
+summary(lm(sqrtv~sqrtm)) # statystyki liczbowe
 
 boxplot(serie~floor(time(sqrtserie)), xlab = "Lata", ylab="Opady [mm]")
 
 plot(1960:1984, sqrtm, main="Średnia rocznie", xlab='lata', ylab= '')
 plot(1960:1984, sqrtv, main="Wariancja rocznie", xlab='lata', ylab='')
+
+# STACJONARNOŚĆ 
+adf.test(serie)
+kpss.test(serie)
+
+adf.test(sqrtserie)
+kpss.test(sqrtserie)
+
+# DEKOMPOZYCJA
+plot(decompose(serie))
+plot(decompose(sqrtserie))
+
+par(mfrow=c(2,1))
+monthplot(serie,main="Dane miesięcznie", ylab="")
+monthplot(sqrtserie,main="Dane spierwiastkowane miesięcznie", ylab="")
+
+# SEZONOWOŚĆ 
+
+
+
+
