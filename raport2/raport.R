@@ -66,7 +66,55 @@ monthplot(serie,main="Dane miesięcznie", ylab="")
 monthplot(sqrtserie,main="Dane spierwiastkowane miesięcznie", ylab="")
 
 # SEZONOWOŚĆ 
+sqrtserie.d12<-diff(sqrtserie,12)
+tsdisplay(sqrtserie.d12, main=expression("Szereg X'"[t]*" = X"[t]-"X"[t-12]))
+sqrtserie.d12.d12<-diff(sqrtserie.d12,12)
+tsdisplay(sqrtserie.d12.d12, main=expression("Szereg X''"[t]*" = X'"[t]-"X'"[t-12]))
+sqrtserie.d12.d12.d12<-diff(sqrtserie.d12.d12,12)
+tsdisplay(sqrtserie.d12.d12.d12, main=expression("Szereg X'''"[t]*" = X''"[t]-"X''"[t-12]))
 
+var(sqrtserie)
+var(sqrtserie.d12)
+var(sqrtserie.d12.d12)
+var(sqrtserie.d12.d12.d12)
 
+# MA(1) --> P=1, p=1
+# AR(0) --> q = 0
+acf(sqrtserie.d12, ylim=c(-1,1), col=c(2,rep(1,11)), lwd=1, lag.max=84, main=expression("Autokowariancja szeregu X'"[t]*" = X"[t]-"X"[t-12]))
+pacf(sqrtserie.d12, ylim=c(-1,1), col=c(rep(1,11),2), lwd=1, lag.max=84, main=expression("Częściowa autokowariancja szeregu X'"[t]*" = X"[t]-"X"[t-12]))
+
+# PORÓWNANIE MODELI
+mod=arima(sqrtserie,order=c(0,0,1),seasonal=list(order=c(0,1,1),period=12))
+summary(mod)
+
+arima.auto.bic<-auto.arima(sqrtserie, ic="bic")
+summary(arima.auto.bic)
+
+arima.auto<-auto.arima(sqrtserie, ic="aic")
+summary(arima.auto)
+
+mod.reszty<-mod$residuals
+plot(mod.reszty)
+acf(mod.reszty,50)
+pacf(mod.reszty,50)
+acf(mod.reszty^2,50)
+tsdiag(mod,gof.lag=24)
+Box.test(mod.reszty,type="Ljung-Box",lag=2,fitdf=1)
+
+arima.auto.bic.reszty<-arima.auto.bic$residuals
+plot(arima.auto.bic.reszty)
+acf(arima.auto.bic.reszty,50)
+pacf(arima.auto.bic.reszty,50)
+acf(arima.auto.bic.reszty^2,50)
+tsdiag(arima.auto.bic,gof.lag=24)
+Box.test(arima.auto.bic.reszty,type="Ljung-Box",lag=2,fitdf=1)
+
+arima.auto.reszty<-arima.auto$residuals
+plot(arima.auto.reszty)
+acf(arima.auto.reszty,50)
+pacf(arima.auto.reszty,50)
+acf(arima.auto.reszty^2,50)
+tsdiag(arima.auto,gof.lag=24)
+Box.test(arima.auto.reszty,type="Ljung-Box",lag=2,fitdf=1)
 
 
