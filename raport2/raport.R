@@ -93,6 +93,7 @@ summary(arima.auto.bic)
 arima.auto<-auto.arima(sqrtserie, ic="aic")
 summary(arima.auto)
 
+# WALIDACJA MODELI
 mod.reszty<-mod$residuals
 plot(mod.reszty)
 acf(mod.reszty,50)
@@ -117,4 +118,25 @@ acf(arima.auto.reszty^2,50)
 tsdiag(arima.auto,gof.lag=24)
 Box.test(arima.auto.reszty,type="Ljung-Box",lag=2,fitdf=1)
 
+# RESIDUA - ANALIZA
+qqnorm(mod.reszty)
+qqline(mod.reszty,col=2,lwd=2)
 
+hist(mod.reszty,breaks=20,freq=F, main='Histogram', xlab='', ylab='Gęstość')
+curve(dnorm(x,mean=mean(mod.reszty),sd=sd(mod.reszty)),col=2,add=T)
+
+
+qqnorm(arima.auto.bic.reszty)
+qqline(arima.auto.bic.reszty,col=2,lwd=2)
+
+hist(arima.auto.bic.reszty,breaks=20,freq=F, main='Histogram', xlab='', ylab='Gęstość')
+curve(dnorm(x,mean=mean(arima.auto.bic.reszty),sd=sd(arima.auto.bic.reszty)),col=2,add=T)
+
+
+qqnorm(arima.auto.reszty)
+qqline(arima.auto.reszty,col=2,lwd=2)
+
+hist(arima.auto.reszty,breaks=20,freq=F, main='Histogram', xlab='', ylab='Gęstość')
+curve(dnorm(x,mean=mean(arima.auto.reszty),sd=sd(arima.auto.reszty)),col=2,add=T)
+
+# PREDYKCJA
