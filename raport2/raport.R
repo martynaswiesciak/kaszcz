@@ -89,13 +89,28 @@ pacf(sqrtserie.d12, ylim=c(-1,1), col=c(rep(1,11),2), lwd=1, lag.max=84, main=ex
 
 # PORÓWNANIE MODELI
 mod=arima(sqrtserie,order=c(0,0,1),seasonal=list(order=c(0,1,2),period=12))
+plot(sqrtserie, xlab="", ylab="", main = "Dane rzeczywiste vs dopasowany model nr 1")
+lines(fitted(mod), col="red")
+legend("topright",legend=c("Dane rzeczywiste", "Dopasowany szereg"),
+       col=c("black", "red"),lty=c(1,1), text.font=1, cex=0.6) 
+
 summary(mod)
+BIC(mod)
 
 arima.auto.bic<-auto.arima(sqrtserie, ic="bic")
+plot(sqrtserie, xlab="", ylab="", main = "Dane rzeczywiste vs dopasowany model nr 2")
+lines(fitted(arima.auto.bic), col="magenta")
+legend("topright",legend=c("Dane rzeczywiste", "Dopasowany szereg"),
+       col=c("black", "magenta"),lty=c(1,1), text.font=1, cex=0.6) 
 summary(arima.auto.bic)
 
 arima.auto.aic<-auto.arima(sqrtserie, ic="aic")
 summary(arima.auto.aic)
+plot(sqrtserie, xlab="", ylab="", main = "Dane rzeczywiste vs dopasowany model nr 3")
+lines(fitted(arima.auto.bic), col="blue")
+legend("topright",legend=c("Dane rzeczywiste", "Dopasowany szereg"),
+       col=c("black", "blue"),lty=c(1,1), text.font=1, cex=0.6) 
+
 
 # WALIDACJA MODELI
 mod.reszty<-mod$residuals
