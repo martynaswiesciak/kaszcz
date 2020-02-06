@@ -4,11 +4,11 @@ graphics.off()
 library(forecast)
 library(tseries)
 
-#data <- read.csv('/Users/martynaswiesciak/Desktop/Studia/sem5/KASZCZ/kaszcz/raport2/bangladesz.csv')
+data <- read.csv('/Users/martynaswiesciak/Desktop/Studia/sem5/KASZCZ/kaszcz/raport2/bangladesz.csv')
 serie.all <- ts(data$rain, start = c(1901, 1), end = c(2015, 12), frequency = 12)
 start(serie.all)
 
-# PODZIA£ DANYCH NA PRÃ“BKÄ˜ TESTOWÄ„ I DO PREDYKCJI
+# PODZIA? DANYCH NA PRÃ“BKÄ˜ TESTOWÄ„ I DO PREDYKCJI
 serie.all <- window(serie.all, start=c(1960, 1))
 serie <- window(serie.all,end=c(1984,12)) # dane testowe
 plot(serie, main='Opady w Bangladeszu', xlab='lata', ylab='opady [mm]') 
@@ -82,13 +82,13 @@ var(sqrtserie.d12)
 var(sqrtserie.d12.d12)
 var(sqrtserie.d12.d12.d12)
 
-# MA(1) --> P=1, p=1
-# AR(0) --> q = 0
-acf(sqrtserie.d12, ylim=c(-1,1), col=c(2,rep(1,11)), lwd=1, lag.max=84, main=expression("Autokowariancja szeregu X'"[t]*" = X"[t]-"X"[t-12]))
-pacf(sqrtserie.d12, ylim=c(-1,1), col=c(rep(1,11),2), lwd=1, lag.max=84, main=expression("CzÄ™Å›ciowa autokowariancja szeregu X'"[t]*" = X"[t]-"X"[t-12]))
+# MA(1) --> P = 1, p = 1
+# AR(0) --> q = 0, Q = 2
+acf(sqrtserie.d12, ylim=c(-1,1), col=c(2,rep(1,11)), lwd=1, lag.max=84, main=expression("Autokorelacja szeregu X'"[t]*" = X"[t]-"X"[t-12]))
+pacf(sqrtserie.d12, ylim=c(-1,1), col=c(rep(1,11),2), lwd=1, lag.max=84, main=expression("CzÄ™Å›ciowa autokorelacja szeregu X'"[t]*" = X"[t]-"X"[t-12]))
 
 # PORÃ“WNANIE MODELI
-mod=arima(sqrtserie,order=c(0,0,1),seasonal=list(order=c(0,1,1),period=12))
+mod=arima(sqrtserie,order=c(0,0,1),seasonal=list(order=c(0,1,2),period=12))
 summary(mod)
 
 arima.auto.bic<-auto.arima(sqrtserie, ic="bic")
@@ -168,7 +168,7 @@ lines(sqrtserie,col='red')
 accuracy(prognoza.arima.auto.aic)
 accuracy(prognoza.arima.auto.aic,sqrt(dane.test))
 
-#œrednia szerokoœæ przedzia³u ufnoœci
+#?rednia szeroko?? przedzia?u ufno?ci
 mean(prognoza.mod$upper[1:72,2]-prognoza.mod$lower[1:72,2])
 mean(prognoza.arima.auto.bic$upper[1:72,2]-prognoza.arima.auto.bic$lower[1:72,2])
 mean(prognoza.arima.auto.aic$upper[1:72,2]-prognoza.arima.auto.aic$lower[1:72,2])
