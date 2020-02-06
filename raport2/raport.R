@@ -97,7 +97,7 @@ legend("topright",legend=c("Dane rzeczywiste", "Dopasowany szereg"),
 summary(mod)
 BIC(mod)
 
-arima.auto.bic<-auto.arima(sqrtserie, ic="bic")
+arima.auto.bic<-auto.arima(sqrtserie, ic="bic", allowdrift = FALSE)
 plot(sqrtserie, xlab="", ylab="", main = "Dane rzeczywiste vs dopasowany model nr 2")
 lines(fitted(arima.auto.bic), col="magenta")
 legend("topright",legend=c("Dane rzeczywiste", "Dopasowany szereg"),
@@ -166,7 +166,8 @@ plot(prognoza.mod,main="Prognoza modelu nr 1")
 lines(sqrt(dane.test), col="red")
 lines(sqrtserie,col='red')
 accuracy(mod)
-accuracy(mod,sqrt(dane.test))
+#accuracy(mod,sqrt(dane.test))
+summary(prognoza.mod)
 
 prognoza.arima.auto.bic<-forecast(arima.auto.bic,h=6*12)
 plot(prognoza.arima.auto.bic,main="Prognoza modelu nr 2")
@@ -189,15 +190,15 @@ mean(prognoza.arima.auto.bic$upper[1:72,2]-prognoza.arima.auto.bic$lower[1:72,2]
 mean(prognoza.arima.auto.aic$upper[1:72,2]-prognoza.arima.auto.aic$lower[1:72,2])
 
 
+
+ultim=c(1984,12)
+pred=predict(mod,n.ahead=6*12)
+pr<-ts(c(tail(sqrtserie,1),pred$pred),start=ultim,freq=12)
+se<-ts(c(0,pred$se),start=ultim,freq=12)
+
 # 
-# ultim=c(1984,12)
-# pred=predict(mod,n.ahead=6*12)
-# pr<-ts(c(tail(sqrtserie,1),pred$pred),start=ultim,freq=12)
-# se<-ts(c(0,pred$se),start=ultim,freq=12)
 # 
-# 
-# 
-# #Intervals
+#Intervals
 # tl1<-ts((pr-1.96*se)^2,start=ultim,freq=12)
 # tu1<-ts((pr+1.96*se)^2,start=ultim,freq=12)
 # pr1<-ts((pr)^2,start=ultim,freq=12)
@@ -205,6 +206,20 @@ mean(prognoza.arima.auto.aic$upper[1:72,2]-prognoza.arima.auto.aic$lower[1:72,2]
 # ts.plot(serie,tl1,tu1,pr1,lty=c(1,2,2,1),col=c(1,4,4,2),type="l",main="Model 1 ")
 # abline(v=1949+0:13,lty=3,col=4)
 # lines(serie.all)
+# 
+# ultim=c(1960,1)
+# se<-ts(c(0,mod$se),start=ultim,freq=12)
+# tl1<-ts((fitted(mod)-1.96*se)^2,start=ultim,freq=12)
+# tu1<-ts((fitted(mod)+1.96*se)^2,start=ultim,freq=12)
+# ts1<-ts((fitted(mod))^2,start=ultim,freq=12)
+# 
+# ts.plot(serie,lty=1, col=1, type="l")
+# lines(tl1, lty=2, col="4")
+# 
+# #ts.plot(serie,tl1,tu1,ts1,lty=c(1,2,2,1),col=c(1,4,4,2),type="l",main="Model 1 ")
+# abline(v=1949+0:13,lty=3,col=4)
+# lines(serie.all)
+
 
 
 
