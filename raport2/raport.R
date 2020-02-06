@@ -104,7 +104,7 @@ legend("topright",legend=c("Dane rzeczywiste", "Dopasowany szereg"),
        col=c("black", "magenta"),lty=c(1,1), text.font=1, cex=0.6) 
 summary(arima.auto.bic)
 
-arima.auto.aic<-auto.arima(sqrtserie, ic="aic")
+arima.auto.aic<-auto.arima(sqrtserie, ic="aic", allowdrift = FALSE)
 summary(arima.auto.aic)
 plot(sqrtserie, xlab="", ylab="", main = "Dane rzeczywiste vs dopasowany model nr 3")
 lines(fitted(arima.auto.bic), col="blue")
